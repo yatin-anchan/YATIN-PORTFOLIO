@@ -1,0 +1,297 @@
+/* Cinematic Cutscene Styling */
+
+body {
+    overflow: hidden;
+}
+
+#cutscene-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+}
+
+.scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.scene.active {
+    opacity: 1;
+}
+
+/* Skip Button */
+.skip-button {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    padding: 12px 30px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    animation: fadeInSkip 0.5s 1.5s forwards;
+}
+
+.skip-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+@keyframes fadeInSkip {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scene 1: Awakening */
+#scene-1 {
+    background: radial-gradient(circle at center, #1a0033 0%, #000 100%);
+}
+
+.background-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="2" cy="2" r="1" fill="white" opacity="0.3"/></svg>');
+    background-size: 100px 100px;
+    animation: particleFloat 20s linear infinite;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100px); }
+}
+
+.character-silhouette {
+    width: 300px;
+    height: 500px;
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+    clip-path: polygon(50% 0%, 30% 15%, 25% 40%, 20% 60%, 15% 80%, 20% 100%, 35% 95%, 40% 80%, 45% 70%, 55% 70%, 60% 80%, 65% 95%, 80% 100%, 85% 80%, 80% 60%, 75% 40%, 70% 15%);
+    filter: blur(2px);
+    position: relative;
+}
+
+.fade-in {
+    animation: fadeInSilhouette 3s ease-in forwards;
+}
+
+@keyframes fadeInSilhouette {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.dialogue-text {
+    position: absolute;
+    bottom: 15%;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+}
+
+.dialogue-line {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+    animation: textFadeIn 2s ease-in forwards;
+    opacity: 0;
+}
+
+@keyframes textFadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Scene 2: The Traveler */
+#scene-2 {
+    background: radial-gradient(circle at center, #001a33 0%, #000 100%);
+}
+
+.wind-streaks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.wind-streaks::before,
+.wind-streaks::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(117, 194, 170, 0.6), transparent);
+    animation: windSlide 3s ease-in-out infinite;
+}
+
+.wind-streaks::before {
+    top: 30%;
+    animation-delay: 0s;
+}
+
+.wind-streaks::after {
+    top: 60%;
+    animation-delay: 1.5s;
+}
+
+@keyframes windSlide {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.stance-idle {
+    animation: idleSway 3s ease-in-out infinite;
+}
+
+@keyframes idleSway {
+    0%, 100% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+}
+
+/* Scene 3: The Realms */
+#scene-3 {
+    background: radial-gradient(circle at center, #0a0a1a 0%, #000 100%);
+}
+
+.realm-outlines {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    width: 80%;
+    max-width: 1000px;
+    animation: zoomOut 2s ease-out forwards;
+}
+
+@keyframes zoomOut {
+    0% { transform: scale(2); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.realm {
+    padding: 30px;
+    border: 2px solid;
+    border-radius: 15px;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    animation: realmPulse 2s ease-in-out infinite;
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.realm[data-element="pyro"] {
+    border-color: var(--pyro);
+    color: var(--pyro);
+    box-shadow: 0 0 20px var(--pyro);
+}
+
+.realm[data-element="electro"] {
+    border-color: var(--electro);
+    color: var(--electro);
+    box-shadow: 0 0 20px var(--electro);
+}
+
+.realm[data-element="cryo"] {
+    border-color: var(--cryo);
+    color: var(--cryo);
+    box-shadow: 0 0 20px var(--cryo);
+}
+
+.realm[data-element="geo"] {
+    border-color: var(--geo);
+    color: var(--geo);
+    box-shadow: 0 0 20px var(--geo);
+}
+
+.realm[data-element="anemo"] {
+    border-color: var(--anemo);
+    color: var(--anemo);
+    box-shadow: 0 0 20px var(--anemo);
+}
+
+.realm[data-element="hydro"] {
+    border-color: var(--hydro);
+    color: var(--hydro);
+    box-shadow: 0 0 20px var(--hydro);
+}
+
+@keyframes realmPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Scene 4: The Mission */
+#scene-4 {
+    background: #000;
+}
+
+.turn-forward {
+    animation: turnCharacter 2s ease-out forwards;
+}
+
+@keyframes turnCharacter {
+    0% { transform: rotateY(180deg); opacity: 0.5; }
+    100% { transform: rotateY(0deg); opacity: 1; }
+}
+
+.mission-text {
+    font-size: 3rem;
+    margin-top: 20px;
+    color: var(--gold);
+    animation: missionGlow 1.5s ease-in-out forwards;
+}
+
+@keyframes missionGlow {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.5);
+        text-shadow: none;
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1);
+        text-shadow: 0 0 30px var(--gold), 0 0 60px var(--gold), 0 0 90px var(--gold);
+    }
+}
+
+.portal-effect {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+    animation: portalOpen 3s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes portalOpen {
+    0% { 
+        opacity: 0; 
+        transform: scale(0);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(2);
+    }
+}

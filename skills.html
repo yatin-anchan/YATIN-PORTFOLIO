@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills - The Code Domain</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/achievements.css">
+    <link rel="stylesheet" href="css/code-domain.css">
+</head>
+<body>
+    <!-- Loading Screen - Portal Opening -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="portal-container">
+            <div class="portal-ring portal-ring-1"></div>
+            <div class="portal-ring portal-ring-2"></div>
+            <div class="portal-ring portal-ring-3"></div>
+            <div class="portal-center">⚡</div>
+        </div>
+        <h2 class="loading-title">Entering the Code Sanctum...</h2>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Merlin Dialogue Box (First Visit) -->
+    <div class="dialogue-overlay" id="dialogue-overlay">
+        <div class="dialogue-box">
+            <div class="merlin-portrait">
+                <div class="wizard-avatar">🧙‍♂️</div>
+                <div class="wizard-glow"></div>
+            </div>
+            <div class="dialogue-content">
+                <h3 class="speaker-name">Merlin, Keeper of Programming Arts</h3>
+                <p class="dialogue-text" id="dialogue-text"></p>
+                <button class="dialogue-btn" id="dialogue-next">Continue ➜</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightning Effects Canvas -->
+    <canvas id="lightning-canvas" class="lightning-canvas"></canvas>
+
+    <!-- Starfield & Magic Particles -->
+    <div class="starfield" id="starfield"></div>
+    <div class="magic-particles" id="magic-particles"></div>
+
+    <a href="homepage.html" class="back-btn">← Back to Map</a>
+
+    <div class="skills-container">
+        <!-- Wizard Tower Background -->
+        <div class="wizard-tower-bg"></div>
+
+        <div class="realm-header">
+            <div class="realm-icon-large">
+                <div class="magic-circle">
+                    <div class="rune rune-1">⚡</div>
+                    <div class="rune rune-2">✨</div>
+                    <div class="rune rune-3">💫</div>
+                    <div class="central-icon">🧙‍♂️</div>
+                </div>
+            </div>
+            <h1 class="realm-title glow">The Code Sanctum</h1>
+            <p class="realm-subtitle">Master the Ancient Arts of Programming</p>
+        </div>
+
+        <!-- Skill Tree Container -->
+        <div class="skill-tree-container">
+            
+            <!-- Programming Languages -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">📜</span>
+                    <span>Ancient Tomes of Languages</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="programming-grid"></div>
+            </div>
+
+            <!-- Web & App Development -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">🌐</span>
+                    <span>Web Crafting Spells</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="webdev-grid"></div>
+            </div>
+
+            <!-- Machine Learning & Data Science -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">🔮</span>
+                    <span>Arcane Intelligence Arts</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="ml-grid"></div>
+            </div>
+
+            <!-- Robotics & Embedded -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">⚙️</span>
+                    <span>Mechanical Enchantments</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="robotics-grid"></div>
+            </div>
+
+            <!-- UI/UX and Tools -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">🎨</span>
+                    <span>Visual Sorcery</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="uiux-grid"></div>
+            </div>
+
+            <!-- Leadership & Interpersonal -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">👑</span>
+                    <span>Leadership Virtues</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="leadership-grid"></div>
+            </div>
+
+            <!-- Cloud/Blockchain -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">☁️</span>
+                    <span>Ethereal Technologies</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="cloud-grid"></div>
+            </div>
+
+            <!-- Other Skills -->
+            <div class="skill-category">
+                <h2 class="category-title">
+                    <span class="category-icon">✨</span>
+                    <span>Miscellaneous Magics</span>
+                    <div class="title-lightning"></div>
+                </h2>
+                <div class="skills-scroll-grid" id="other-grid"></div>
+            </div>
+
+        </div>
+
+        <!-- Merlin's Floating Hint -->
+        <div class="merlin-hint" id="merlin-hint">
+            <div class="hint-wizard">🧙‍♂️</div>
+            <div class="hint-bubble">Click on any scroll to channel its power!</div>
+        </div>
+
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/achievement-system.js"></script>
+    <script src="js/lore-system.js"></script>
+    <script src="js/xp-system.js"></script>
+    <script src="js/game-engine.js"></script>
+    <script src="js/code-domain.js"></script>
+</body>
+</html>

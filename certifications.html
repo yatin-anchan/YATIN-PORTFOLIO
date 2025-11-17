@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Constellation Observatory - Celestial Cartography</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/observatory.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Orbitron:wght@400;500;700&family=Space+Grotesk:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cosmic Loading Portal -->
+    <div class="cosmic-loader" id="cosmic-loader">
+        <div class="loader-nebula"></div>
+        <div class="loader-content">
+            <div class="portal-rings">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+                <div class="ring ring-4"></div>
+            </div>
+            <div class="loader-telescope">
+                <img src="/images/telescope_no_bg.png" alt="Telescope" class="telescope-icon">
+            </div>
+        </div>
+        <h2 class="loader-text">Initializing Observatory Systems</h2>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+            <div class="progress-stars"></div>
+        </div>
+        <p class="loader-subtitle">Calibrating Celestial Coordinates...</p>
+    </div>
+
+    <!-- Galileo's Welcome Transmission -->
+    <div class="transmission-overlay" id="transmission-overlay">
+        <div class="transmission-static"></div>
+        <div class="transmission-box">
+            <div class="transmission-header">
+                <div class="signal-indicator">
+                    <span class="signal-dot"></span>
+                    <span class="signal-text">SIGNAL ACTIVE</span>
+                </div>
+                <div class="transmission-close" id="skip-transmission">SKIP ⏭</div>
+            </div>
+            <div class="hologram-avatar">
+                <div class="hologram-scan"></div>
+                <div class="avatar-icon">🔭</div>
+                <div class="hologram-glitch"></div>
+            </div>
+            <div class="transmission-content">
+                <h3 class="sender-name" id="sender-name">GALILEO GALILEI</h3>
+                <p class="sender-title">Astral Cartographer • Observatory Chief</p>
+                <div class="message-display">
+                    <p class="message-text" id="message-text"></p>
+                    <span class="typing-cursor">▊</span>
+                </div>
+                <button class="transmission-btn" id="next-transmission">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">CONTINUE TRANSMISSION</span>
+                    <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Observatory Dome -->
+    <div class="observatory-dome" id="observatory-dome">
+        <!-- Infinite Space Background Layers -->
+        <div class="space-layer nebula-layer"></div>
+        <div class="space-layer galaxy-layer"></div>
+        <div class="space-layer starfield-layer" id="starfield"></div>
+        <div class="space-layer aurora-layer"></div>
+        <div class="meteor-shower" id="meteor-shower"></div>
+
+        <!-- Navigation -->
+        <nav class="observatory-nav">
+            <a href="homepage.html" class="nav-btn back-btn">
+                <span class="btn-icon">←</span>
+                <span>Return to Map</span>
+            </a>
+            <div class="nav-logo">
+                <div class="logo-orbit"></div>
+                <span class="logo-text">OBSERVATORY</span>
+            </div>
+        </nav>
+
+        <!-- Observatory Control Panel -->
+        <div class="control-panel">
+            <div class="panel-header">
+                <h1 class="observatory-name">THE CONSTELLATION OBSERVATORY</h1>
+                <p class="observatory-motto">Where Knowledge Becomes Stardust</p>
+            </div>
+        </div>
+
+        <!-- Constellation Canvas -->
+        <canvas id="constellation-canvas" class="constellation-canvas"></canvas>
+
+        <!-- Magnificent Telescope Station -->
+        <div class="telescope-station" id="telescope-station">
+            <div class="station-platform"></div>
+            <div class="telescope-mount">
+                <img src="/images/telescope_no_bg.png" alt="Observatory Telescope" class="main-telescope">
+                <div class="lens-flare"></div>
+                <div class="telescope-aura"></div>
+            </div>
+            <div class="activation-ring"></div>
+            <button class="engage-btn" id="engage-telescope">
+                <span class="engage-icon">🔭</span>
+                <span class="engage-text">ENGAGE TELESCOPE VIEW</span>
+                <div class="engage-glow"></div>
+            </button>
+        </div>
+
+        <!-- Quick View Stars Button -->
+        <button class="quick-view-btn" id="quick-view-btn">
+            <span class="quick-icon">📜</span>
+            <span class="quick-text">View All Certificates</span>
+        </button>
+    </div>
+
+    <!-- Telescope Observation Mode -->
+    <div class="telescope-mode" id="telescope-mode">
+        <div class="scope-interface">
+            <!-- HUD Overlay -->
+            <div class="hud-overlay">
+                <div class="hud-corner corner-tl"></div>
+                <div class="hud-corner corner-tr"></div>
+                <div class="hud-corner corner-bl"></div>
+                <div class="hud-corner corner-br"></div>
+                
+                <div class="hud-top">
+                    <div class="hud-module">
+                        <span class="module-label">SYSTEM</span>
+                        <span class="module-value">NEXUS-7 TELESCOPE</span>
+                    </div>
+                    <div class="hud-module">
+                        <span class="module-label">TIME</span>
+                        <span class="module-value" id="hud-time">00:00:00</span>
+                    </div>
+                    <div class="hud-module">
+                        <span class="module-label">MODE</span>
+                        <span class="module-value status-active">OBSERVATION</span>
+                    </div>
+                </div>
+                
+                <div class="hud-center">
+                    <div class="reticle" id="reticle">
+                        <div class="reticle-ring"></div>
+                        <div class="reticle-cross h"></div>
+                        <div class="reticle-cross v"></div>
+                        <div class="reticle-dot"></div>
+                        <div class="reticle-scanner"></div>
+                    </div>
+                </div>
+                
+                <div class="hud-bottom">
+                    <div class="coordinate-display">
+                        <span class="coord-label">COORDINATES</span>
+                        <span class="coord-value" id="coordinates">RA: 00.0° | DEC: +00.0°</span>
+                    </div>
+                    <div class="target-info" id="target-info">
+                        <span class="info-label">TARGET</span>
+                        <span class="info-value">Scanning...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deep Space View -->
+            <canvas id="deep-space-canvas" class="deep-space-canvas"></canvas>
+            <div class="observation-stars" id="observation-stars"></div>
+
+            <!-- Exit Control -->
+            <button class="exit-scope-btn" id="exit-scope">
+                <span class="exit-icon">✕</span>
+                <span class="exit-text">EXIT OBSERVATION MODE</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Certificate Constellation Modal -->
+    <div class="star-modal" id="star-modal">
+        <div class="modal-cosmos"></div>
+        <div class="star-card">
+            <div class="card-supernova"></div>
+            <button class="card-close" id="close-modal">✕</button>
+            
+            <div class="star-display">
+                <div class="star-icon" id="star-icon">⭐</div>
+                <div class="star-rings">
+                    <div class="orbit-ring ring-a"></div>
+                    <div class="orbit-ring ring-b"></div>
+                    <div class="orbit-ring ring-c"></div>
+                </div>
+            </div>
+            
+            <div class="certificate-data">
+                <h2 class="cert-name" id="cert-name">Certificate Name</h2>
+                <div class="cert-meta">
+                    <span class="meta-item">
+                        <span class="meta-icon">🏛️</span>
+                        <span class="meta-text" id="cert-issuer">Issuer</span>
+                    </span>
+                    <span class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        <span class="meta-text" id="cert-date">Date</span>
+                    </span>
+                </div>
+                <div class="cert-category" id="cert-category">Category</div>
+                <div class="cert-coordinates">
+                    <span class="coord-label">CELESTIAL COORDINATES</span>
+                    <span class="coord-data" id="cert-coords">RA 00.0° | DEC +00.0°</span>
+                </div>
+            </div>
+            
+            <button class="continue-btn" id="continue-observation">
+                <span class="continue-icon">🌟</span>
+                <span class="continue-text">CONTINUE OBSERVATION</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Certificate List View -->
+    <div class="certificate-list-modal" id="cert-list-modal">
+        <div class="list-backdrop"></div>
+        <div class="list-container">
+            <div class="list-header">
+                <h2 class="list-title">STELLAR ACHIEVEMENTS</h2>
+                <button class="list-close" id="close-list">✕</button>
+            </div>
+            <div class="certificates-grid" id="certificates-grid">
+                <!-- Certificates will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/observatory-system.js"></script>
+</body>
+</html>

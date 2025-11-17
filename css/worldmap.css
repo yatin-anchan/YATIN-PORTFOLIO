@@ -1,0 +1,466 @@
+/* World Map Styling - Actual Map Design */
+
+.world-map-container {
+    min-height: 100vh;
+    padding: 40px 20px 100px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Header */
+.map-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.world-title {
+    font-size: 3.5rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.name-highlight {
+    background: linear-gradient(135deg, var(--gold), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.world-subtitle {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+}
+
+/* Map Canvas Wrapper */
+.map-canvas-wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
+    position: relative;
+    height: 800px;
+    background: radial-gradient(ellipse at center, rgba(15, 15, 35, 0.5) 0%, rgba(15, 15, 35, 0.9) 100%);
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 0 60px rgba(0, 0, 0, 0.5),
+        inset 0 0 100px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* SVG Paths Layer */
+.path-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.map-path {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 5px currentColor);
+    animation: pathPulse 3s ease-in-out infinite;
+}
+
+@keyframes pathPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+.path-particle {
+    filter: drop-shadow(0 0 8px white);
+}
+
+/* Map Canvas */
+.map-canvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* Map Region Markers */
+.map-region {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+.map-region:hover {
+    z-index: 100;
+}
+
+/* Region Marker (the icon pin) */
+.region-marker {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.map-region:hover .region-marker {
+    transform: translateY(-15px) scale(1.2);
+}
+
+.marker-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.3;
+    animation: markerPulse 2s ease-out infinite;
+}
+
+@keyframes markerPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.marker-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 5px 15px currentColor);
+    position: relative;
+    z-index: 2;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+/* Region Nameplate */
+.region-nameplate {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    background: var(--gradient-card);
+    padding: 15px 25px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+    text-align: center;
+    min-width: 200px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.map-region:hover .region-nameplate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.region-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px currentColor;
+}
+
+.region-hint {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Region Glow */
+.region-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.map-region:hover .region-glow {
+    opacity: 0.6;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
+}
+
+/* Element-specific colors */
+.map-region[data-element="electro"] {
+    color: var(--electro);
+}
+
+.map-region[data-element="electro"] .region-glow {
+    background: var(--electro);
+}
+
+.map-region[data-element="electro"]:hover .region-nameplate {
+    border-color: var(--electro);
+    box-shadow: 0 10px 40px rgba(168, 85, 247, 0.5);
+}
+
+.map-region[data-element="pyro"] {
+    color: var(--pyro);
+}
+
+.map-region[data-element="pyro"] .region-glow {
+    background: var(--pyro);
+}
+
+.map-region[data-element="pyro"]:hover .region-nameplate {
+    border-color: var(--pyro);
+    box-shadow: 0 10px 40px rgba(239, 122, 53, 0.5);
+}
+
+.map-region[data-element="cryo"] {
+    color: var(--cryo);
+}
+
+.map-region[data-element="cryo"] .region-glow {
+    background: var(--cryo);
+}
+
+.map-region[data-element="cryo"]:hover .region-nameplate {
+    border-color: var(--cryo);
+    box-shadow: 0 10px 40px rgba(160, 215, 228, 0.5);
+}
+
+.map-region[data-element="anemo"] {
+    color: var(--anemo);
+}
+
+.map-region[data-element="anemo"] .region-glow {
+    background: var(--anemo);
+}
+
+.map-region[data-element="anemo"]:hover .region-nameplate {
+    border-color: var(--anemo);
+    box-shadow: 0 10px 40px rgba(117, 194, 170, 0.5);
+}
+
+.map-region[data-element="geo"] {
+    color: var(--geo);
+}
+
+.map-region[data-element="geo"] .region-glow {
+    background: var(--geo);
+}
+
+.map-region[data-element="geo"]:hover .region-nameplate {
+    border-color: var(--geo);
+    box-shadow: 0 10px 40px rgba(245, 158, 11, 0.5);
+}
+
+.map-region[data-element="hydro"] {
+    color: var(--hydro);
+}
+
+.map-region[data-element="hydro"] .region-glow {
+    background: var(--hydro);
+}
+
+.map-region[data-element="hydro"]:hover .region-nameplate {
+    border-color: var(--hydro);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.5);
+}
+
+/* Locked Region */
+.map-region.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+}
+
+.map-region.locked:hover .region-marker {
+    transform: none;
+}
+
+.map-region.locked:hover .region-glow {
+    opacity: 0.2;
+}
+
+.lock-overlay {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    background: var(--gradient-card);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.map-region.unlocked .lock-overlay {
+    display: none;
+}
+
+/* Quick Menu */
+.quick-menu {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    gap: 15px;
+    z-index: 100;
+}
+
+.menu-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 20px;
+    background: var(--gradient-card);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.menu-btn:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+}
+
+.btn-icon {
+    font-size: 1.8rem;
+}
+
+.btn-label {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Final Mission Banner */
+.mission-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--gradient-card);
+    border: 3px solid var(--gold);
+    border-radius: 20px;
+    padding: 40px 60px;
+    text-align: center;
+    z-index: 200;
+    box-shadow: 0 20px 80px rgba(255, 215, 0, 0.5);
+    animation: bannerAppear 1s ease-out;
+}
+
+.mission-banner.hidden {
+    display: none;
+}
+
+@keyframes bannerAppear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.banner-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    animation: bannerPulse 2s ease-in-out infinite;
+}
+
+@keyframes bannerPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.banner-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.banner-text {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .map-canvas-wrapper {
+        height: 600px;
+    }
+    
+    .world-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .map-canvas-wrapper {
+        height: 500px;
+    }
+    
+    .region-marker {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .marker-icon {
+        font-size: 2rem;
+    }
+    
+    .region-nameplate {
+        min-width: 150px;
+        padding: 10px 15px;
+    }
+    
+    .region-name {
+        font-size: 1rem;
+    }
+    
+    .region-hint {
+        font-size: 0.8rem;
+    }
+    
+    .quick-menu {
+        bottom: 20px;
+        right: 20px;
+        flex-direction: column;
+    }
+}

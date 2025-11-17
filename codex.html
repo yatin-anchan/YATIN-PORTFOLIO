@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/achievements.css">
+    <style>
+        .achievements-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .achievements-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .achievements-title {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .achievements-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .tier-section {
+            margin-bottom: 50px;
+        }
+
+        .tier-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tier-title.bronze { color: #cd7f32; }
+        .tier-title.silver { color: #c0c0c0; }
+        .tier-title.gold { color: var(--gold); }
+        .tier-title.mythic { color: #9d4edd; }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .achievement-card {
+            background: var(--gradient-card);
+            border: 3px solid;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.unlocked {
+            cursor: pointer;
+        }
+
+        .achievement-card.unlocked:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px currentColor;
+        }
+
+        .achievement-card.locked {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+
+        .achievement-card.bronze { border-color: #cd7f32; }
+        .achievement-card.silver { border-color: #c0c0c0; }
+        .achievement-card.gold { border-color: var(--gold); }
+        .achievement-card.mythic { border-color: #9d4edd; }
+
+        .achievement-icon-large {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .achievement-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .achievement-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .achievement-xp-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: linear-gradient(135deg, var(--gold), var(--accent));
+            color: var(--bg-dark);
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 12px 25px;
+            background: var(--gradient-card);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            border-color: var(--gold);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield" id="starfield"></div>
+
+    <a href="homepage.html" class="back-btn">← Back to Map</a>
+
+    <div class="achievements-container">
+        <div class="achievements-header">
+            <h1 class="achievements-title glow">🏅 Achievements</h1>
+            <p class="achievements-subtitle">Track your journey's milestones</p>
+        </div>
+
+        <div id="achievements-content">
+            <!-- Generated dynamically -->
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/achievement-system.js"></script>
+    <script src="js/xp-system.js"></script>
+    <script>
+        const content = document.getElementById('achievements-content');
+        const allAchievements = achievementSystem.achievements;
+        const unlockedAchievements = achievementSystem.getAll();
+        const unlockedIds = unlockedAchievements.map(a => a.id);
+
+        const tiers = ['bronze', 'silver', 'gold', 'mythic'];
+        
+        tiers.forEach(tier => {
+            const tierAchievements = Object.values(allAchievements).filter(a => a.tier === tier);
+            
+            if (tierAchievements.length === 0) return;
+            
+            const section = document.createElement('div');
+            section.className = 'tier-section';
+            
+            const title = document.createElement('h2');
+            title.className = `tier-title ${tier}`;
+            title.innerHTML = `<span>${tier.charAt(0).toUpperCase() + tier.slice(1)} Tier</span>`;
+            section.appendChild(title);
+            
+            const grid = document.createElement('div');
+            grid.className = 'achievement-grid';
+            
+            tierAchievements.forEach(achievement => {
+                const isUnlocked = unlockedIds.includes(achievement.id);
+                const card = document.createElement('div');
+                card.className = `achievement-card ${tier} ${isUnlocked ? 'unlocked' : 'locked'}`;
+                
+                card.innerHTML = `
+                    <div class="achievement-icon-large">${achievement.icon}</div>
+                    <h3 class="achievement-name">${isUnlocked ? achievement.name : '???'}</h3>
+                    <p class="achievement-description">${isUnlocked ? achievement.description : 'Locked'}</p>
+                    ${isUnlocked ? `<span class="achievement-xp-badge">+${achievement.xp} XP</span>` : ''}
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            section.appendChild(grid);
+            content.appendChild(section);
+        });
+
+        // Starfield
+        const starfield = document.getElementById('starfield');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            starfield.appendChild(star);
+        }
+    </script>
+</body>
+</html>

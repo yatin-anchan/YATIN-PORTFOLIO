@@ -1,0 +1,180 @@
+/* Genshin Impact-Inspired Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    /* Elemental Colors */
+    --electro: #a855f7;
+    --pyro: #ef7a35;
+    --cryo: #a0d7e4;
+    --anemo: #75c2aa;
+    --geo: #f59e0b;
+    --hydro: #3b82f6;
+    
+    /* UI Colors */
+    --bg-dark: #0f0f23;
+    --bg-card: #1a1a35;
+    --text-primary: #f8f8ff;
+    --text-secondary: #b8b8d0;
+    --gold: #ffd700;
+    --accent: #ff8c00;
+    
+    /* Genshin-style gradients */
+    --gradient-main: linear-gradient(135deg, #1e1e3f 0%, #0f0f23 100%);
+    --gradient-card: linear-gradient(135deg, rgba(26, 26, 53, 0.8) 0%, rgba(15, 15, 35, 0.9) 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--gradient-main);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+h1, h2, h3 {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 80px;
+    height: 80px;
+    border: 6px solid rgba(168, 85, 247, 0.2);
+    border-top: 6px solid var(--electro);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Glow Effect */
+.glow {
+    text-shadow: 0 0 20px currentColor, 
+                 0 0 40px currentColor;
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% { 
+        text-shadow: 0 0 20px currentColor, 
+                     0 0 40px currentColor; 
+    }
+    50% { 
+        text-shadow: 0 0 30px currentColor, 
+                     0 0 60px currentColor,
+                     0 0 80px currentColor; 
+    }
+}
+
+/* Button Styles */
+.btn {
+    padding: 15px 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--accent) 100%);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    transition: 0.6s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+/* Starfield Background */
+.starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Particles */
+.particle {
+    position: absolute;
+    pointer-events: none;
+    animation: float-up 3s ease-out forwards;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-200px) scale(0);
+        opacity: 0;
+    }
+}

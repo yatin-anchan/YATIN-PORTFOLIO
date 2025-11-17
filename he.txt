@@ -1,0 +1,21 @@
+Main Pages
+
+index.html → Astravelle-Gateway.html
+
+homepage.html → Valorion-Hall.html
+
+cutscene.html → Echoes-of-Eternia.html
+
+character-custom.html → Forge-of-Avatars.html
+
+Optional Future Pages
+
+Lore Archive → Chronicles-of-Aurelia.html
+
+Battle Gallery → Arena-of-Reflections.html
+
+About Page → Codex-of-the-Wanderer.html
+
+Contact Page → Celestial-Relay.html
+
+Projects Page → Vault-of-Ethercraft.html

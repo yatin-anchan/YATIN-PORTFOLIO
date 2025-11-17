@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>World Map - The Journey of the Developer</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/achievements.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap');
+
+        /* Parchment/Paper texture background */
+        .world-map-container {
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Header */
+        .map-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .world-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .name-highlight {
+            background: linear-gradient(135deg, var(--gold), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .world-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Map Canvas - Actual Map Style */
+        .map-canvas-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            height: 800px;
+            background: 
+                repeating-linear-gradient(0deg, rgba(150, 130, 100, 0.03) 0px, transparent 1px, transparent 2px, rgba(150, 130, 100, 0.03) 3px),
+                repeating-linear-gradient(90deg, rgba(150, 130, 100, 0.03) 0px, transparent 1px, transparent 2px, rgba(150, 130, 100, 0.03) 3px),
+                linear-gradient(135deg, #e8d5b7 0%, #f5e6d3 50%, #e8d5b7 100%);
+            border-radius: 15px;
+            border: 8px solid #4a3f2f;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset 0 0 100px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Aged paper effect */
+        .map-canvas-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(139, 90, 43, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(139, 90, 43, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, rgba(139, 90, 43, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Decorative border pattern */
+        .map-canvas-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(139, 115, 85, 0.1) 15px, rgba(139, 115, 85, 0.1) 16px),
+                repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(139, 115, 85, 0.1) 15px, rgba(139, 115, 85, 0.1) 16px);
+            border-radius: 15px;
+            z-index: 8;
+        }
+
+        /* SVG Container for paths and terrain */
+        .map-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        /* Terrain paths (mountains, forests, etc.) */
+        .terrain-path {
+            fill: none;
+            stroke: #8b7355;
+            stroke-width: 2;
+            opacity: 0.4;
+            stroke-dasharray: 5,3;
+        }
+
+        .map-path {
+            fill: none;
+            stroke: #6b5744;
+            stroke-width: 3;
+            stroke-dasharray: 8,4;
+            opacity: 0.6;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+
+        /* Animated travel marker */
+        .path-traveler {
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+        }
+
+        /* Map decorative elements */
+        .compass-rose {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 120px;
+            height: 120px;
+            z-index: 5;
+            opacity: 0.7;
+        }
+
+        .scale-legend {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border: 2px solid #4a3f2f;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            color: #4a3f2f;
+            z-index: 5;
+        }
+
+        .scale-line {
+            width: 150px;
+            height: 8px;
+            background: repeating-linear-gradient(90deg, #4a3f2f 0px, #4a3f2f 10px, transparent 10px, transparent 20px);
+            margin-top: 8px;
+        }
+
+        /* Region markers - look like actual map pins/locations */
+        .map-region {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .map-region:hover {
+            z-index: 100;
+        }
+
+        /* Region Structure Styling */
+        .region-structure {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .map-region:hover .region-structure {
+            transform: translateY(-10px) scale(1.1);
+        }
+
+        .building-svg {
+            filter: drop-shadow(4px 6px 8px rgba(0, 0, 0, 0.4));
+            transition: all 0.3s ease;
+        }
+
+        .map-region:hover .building-svg {
+            filter: drop-shadow(6px 10px 15px rgba(0, 0, 0, 0.6));
+        }
+
+        /* Building shadow on ground */
+        .building-shadow {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 15px;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        /* Specific building animations */
+        .castle-structure {
+            animation: castlePresence 3s ease-in-out infinite;
+        }
+
+        @keyframes castlePresence {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .forge-structure svg circle[fill="#888"],
+        .forge-structure svg circle[fill="#999"],
+        .forge-structure svg circle[fill="#aaa"] {
+            animation: smokeRise 3s ease-in-out infinite;
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.6; transform: translateY(0); }
+            50% { opacity: 0.3; transform: translateY(-5px); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .library-structure {
+            animation: libraryGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes libraryGlow {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(160, 215, 228, 0.3)); }
+            50% { filter: drop-shadow(0 0 15px rgba(160, 215, 228, 0.6)); }
+        }
+
+        .barracks-structure polygon[fill="#dc2626"] {
+            animation: flagWave 2s ease-in-out infinite;
+            transform-origin: 80px 8px;
+        }
+
+        @keyframes flagWave {
+            0%, 100% { transform: scaleX(1); }
+            50% { transform: scaleX(0.85); }
+        }
+
+        .temple-structure {
+            animation: templeRadiance 5s ease-in-out infinite;
+        }
+
+        @keyframes templeRadiance {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(117, 194, 170, 0.4)); }
+            50% { filter: drop-shadow(0 0 20px rgba(117, 194, 170, 0.7)); }
+        }
+
+        .portal-structure ellipse {
+            animation: portalSwirl 4s linear infinite;
+            transform-origin: center;
+        }
+
+        .portal-structure ellipse:nth-child(5) { animation-delay: 0s; }
+        .portal-structure ellipse:nth-child(6) { animation-delay: 0.5s; }
+        .portal-structure ellipse:nth-child(7) { animation-delay: 1s; }
+
+        @keyframes portalSwirl {
+            0% { transform: rotate(0deg); opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { transform: rotate(360deg); opacity: 0.3; }
+        }
+
+        /* Topographic lines styling */
+        .topo-lines {
+            animation: topoFade 6s ease-in-out infinite;
+        }
+
+        @keyframes topoFade {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Visited marker for buildings */
+        .map-region.visited .region-structure::after {
+            content: '✓';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--gold);
+            color: #4a3f2f;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 3px solid #4a3f2f;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 100;
+            animation: checkmarkPop 0.5s ease;
+        }
+
+        @keyframes checkmarkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Locked portal effect */
+        .map-region.locked .portal-structure {
+            filter: grayscale(0.7) brightness(0.7);
+        }
+
+        .map-region.locked .portal-structure ellipse {
+            animation: none;
+            opacity: 0.1;
+        }
+
+        /* Unlock animation */
+        .map-region.unlocked .portal-structure {
+            animation: unlockFlash 1s ease;
+        }
+
+        @keyframes unlockFlash {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(2) drop-shadow(0 0 30px rgba(59, 130, 246, 1)); }
+        }
+
+        /* Windows glow at night effect */
+        .building-svg rect[fill="#FFD700"],
+        .building-svg rect[fill="#ff6b35"],
+        .building-svg circle[fill="#ff6b35"] {
+            animation: windowGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes windowGlow {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Region labels */
+        .region-nameplate {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border: 2px solid #4a3f2f;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 180px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .map-region:hover .region-nameplate {
+            opacity: 1;
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        .region-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #4a3f2f;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .region-hint {
+            font-size: 0.85rem;
+            color: #6b5744;
+            font-style: italic;
+        }
+
+        /* Terrain illustrations (mountains, forests, etc.) */
+        .terrain-feature {
+            position: absolute;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .mountains {
+            font-size: 3rem;
+            color: #6b5744;
+            animation: mountainMist 5s ease-in-out infinite;
+        }
+
+        @keyframes mountainMist {
+            0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 5px rgba(107, 87, 68, 0.3)); }
+            50% { opacity: 0.4; filter: drop-shadow(0 0 10px rgba(107, 87, 68, 0.5)); }
+        }
+
+        .forest {
+            font-size: 2rem;
+            color: #4a6741;
+            animation: treesSway 4s ease-in-out infinite;
+        }
+
+        @keyframes treesSway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* Enhanced Terrain Features */
+        .terrain-landmark {
+            position: absolute;
+            pointer-events: auto;
+            z-index: 4;
+            text-align: center;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: help;
+        }
+
+        .terrain-landmark:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .landmark-icon {
+            font-size: 2.5rem;
+            margin-bottom: 4px;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4));
+        }
+
+        .landmark-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            color: #4a3f2f;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-weight: 600;
+            border: 1px solid #8b7355;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Specific landmark types */
+        .castle .landmark-icon {
+            color: #6b5744;
+            animation: castleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes castleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .tower .landmark-icon {
+            color: #8b4513;
+        }
+
+        .ruins .landmark-icon {
+            color: #a0a0a0;
+            opacity: 0.8;
+        }
+
+        .camp .landmark-icon {
+            color: #d2691e;
+            animation: campFire 2s ease-in-out infinite;
+        }
+
+        @keyframes campFire {
+            0%, 100% { filter: drop-shadow(2px 2px 4px rgba(255, 100, 0, 0.4)); }
+            50% { filter: drop-shadow(2px 2px 8px rgba(255, 150, 0, 0.6)); }
+        }
+
+        .village .landmark-icon {
+            color: #8b7355;
+        }
+
+        .shrine .landmark-icon {
+            color: #9370db;
+            animation: shrineGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes shrineGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 5px rgba(147, 112, 219, 0.5));
+            }
+            50% { 
+                filter: drop-shadow(0 0 15px rgba(147, 112, 219, 0.8));
+            }
+        }
+
+        /* Water features */
+        .water {
+            color: #4682b4;
+            animation: waterFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes waterFlow {
+            0%, 100% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(3px); opacity: 0.7; }
+        }
+
+        /* Map ornaments */
+        .map-ornament {
+            color: #8b7355;
+            animation: ornamentPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes ornamentPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        /* Path markers */
+        .path-marker {
+            pointer-events: none;
+            animation: markerBob 2s ease-in-out infinite;
+        }
+
+        @keyframes markerBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Mystery markers */
+        .mystery-marker {
+            pointer-events: auto;
+            cursor: pointer;
+            animation: mysteryTwinkle 2.5s ease-in-out infinite;
+        }
+
+        @keyframes mysteryTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Terrain contours animation */
+        .terrain-contours ellipse {
+            animation: contourPulse 6s ease-in-out infinite;
+        }
+
+        @keyframes contourPulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.25; }
+        }
+
+        /* Locked region */
+        .map-region.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.5);
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #4a3f2f;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .map-region.unlocked .lock-overlay {
+            display: none;
+        }
+
+        /* Quick menu */
+        .quick-menu {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .menu-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 15px 20px;
+            background: rgba(232, 213, 183, 0.95);
+            border: 3px solid #4a3f2f;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: rgba(245, 230, 211, 1);
+        }
+
+        .btn-icon {
+            font-size: 1.8rem;
+        }
+
+        .btn-label {
+            font-size: 0.85rem;
+            color: #4a3f2f;
+            font-family: 'Cinzel', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Title cartouche (decorative frame) */
+        .title-cartouche {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #4a3f2f;
+            border-radius: 12px;
+            padding: 15px 40px;
+            z-index: 5;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .cartouche-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: #4a3f2f;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* Mission Banner */
+        .mission-banner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(232, 213, 183, 0.98);
+            border: 4px solid var(--gold);
+            border-radius: 20px;
+            padding: 40px 60px;
+            text-align: center;
+            z-index: 200;
+            box-shadow: 0 20px 80px rgba(255, 215, 0, 0.5);
+            animation: bannerAppear 1s ease-out;
+        }
+
+        .mission-banner.hidden {
+            display: none;
+        }
+
+        @keyframes bannerAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .banner-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner-text {
+            font-size: 1.2rem;
+            color: #4a3f2f;
+        }
+
+        .banner-close {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--gold);
+            border: 2px solid #4a3f2f;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #4a3f2f;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .banner-close:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Footprint trail styling */
+        .footprint {
+            fill: #8b7355;
+            opacity: 0;
+            animation: footprintAppear 0.5s ease forwards;
+        }
+
+        @keyframes footprintAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+        }
+
+        .footprint.left {
+            animation: footprintAppear 0.5s ease forwards, footprintFadeLeft 0.3s ease;
+        }
+
+        .footprint.right {
+            animation: footprintAppear 0.5s ease forwards, footprintFadeRight 0.3s ease;
+        }
+
+        @keyframes footprintFadeLeft {
+            0% { transform: translateX(-3px) scale(0); }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        @keyframes footprintFadeRight {
+            0% { transform: translateX(3px) scale(0); }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        /* Glowing recent footprint */
+        .footprint.recent {
+            fill: #FFD700;
+            opacity: 0.8;
+            animation: recentFootprint 2s ease forwards;
+        }
+
+        @keyframes recentFootprint {
+            0% {
+                opacity: 1;
+                filter: drop-shadow(0 0 8px #FFD700);
+            }
+            100% {
+                opacity: 0.5;
+                fill: #8b7355;
+                filter: drop-shadow(0 0 0px transparent);
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+           ======================================== */
+
+        /* Desktop (1024px - 1399px) */
+        @media (max-width: 1399px) {
+            .map-canvas-wrapper {
+                max-width: 1200px;
+                height: 700px;
+            }
+            
+            .world-title {
+                font-size: 3rem;
+            }
+            
+            .building-svg {
+                width: 70px;
+                height: 84px;
+            }
+            
+            .compass-rose {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .title-cartouche {
+                padding: 12px 30px;
+            }
+            
+            .cartouche-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Tablet Landscape (768px - 1023px) */
+        @media (max-width: 1023px) {
+            .world-map-container {
+                padding: 30px 15px;
+            }
+            
+            .map-header {
+                margin-bottom: 30px;
+            }
+            
+            .world-title {
+                font-size: 2.5rem;
+            }
+            
+            .world-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .map-canvas-wrapper {
+                max-width: 100%;
+                height: 600px;
+                border-width: 6px;
+            }
+            
+            /* Reposition regions for tablet */
+            #region-skills { top: 20% !important; left: 15% !important; }
+            #region-projects { top: 20% !important; left: 50% !important; }
+            #region-education { top: 55% !important; left: 15% !important; }
+            #region-experience { top: 55% !important; left: 50% !important; }
+            #region-certifications { top: 38% !important; left: 82% !important; }
+            #region-contact { top: 75% !important; left: 65% !important; }
+            
+            .building-svg {
+                width: 60px;
+                height: 72px;
+            }
+            
+            .region-nameplate {
+                min-width: 160px;
+                padding: 10px 18px;
+                top: 55px;
+            }
+            
+            .region-name {
+                font-size: 1.1rem;
+            }
+            
+            .region-hint {
+                font-size: 0.8rem;
+            }
+            
+            .compass-rose {
+                width: 90px;
+                height: 90px;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .scale-legend {
+                bottom: 20px;
+                left: 20px;
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .scale-line {
+                width: 120px;
+            }
+            
+            .title-cartouche {
+                padding: 10px 25px;
+            }
+            
+            .cartouche-title {
+                font-size: 1.3rem;
+                letter-spacing: 1px;
+            }
+            
+            .landmark-icon {
+                font-size: 2rem;
+            }
+            
+            .landmark-label {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+            
+            .terrain-feature {
+                font-size: 2rem !important;
+            }
+            
+            .mountains {
+                font-size: 2.5rem;
+            }
+            
+            .forest {
+                font-size: 1.8rem;
+            }
+            
+            .quick-menu {
+                bottom: 30px;
+                right: 30px;
+                gap: 12px;
+            }
+            
+            .menu-btn {
+                padding: 12px 16px;
+            }
+            
+            .btn-icon {
+                font-size: 1.6rem;
+            }
+            
+            .btn-label {
+                font-size: 0.8rem;
+            }
+            
+            .topo-lines {
+                width: 160px !important;
+                height: 160px !important;
+                top: -50px !important;
+                left: -50px !important;
+            }
+        }
+
+        /* Tablet Portrait & Large Mobile (481px - 767px) */
+        @media (max-width: 767px) {
+            .world-map-container {
+                padding: 20px 10px 120px;
+            }
+            
+            .map-header {
+                margin-bottom: 20px;
+            }
+            
+            .world-title {
+                font-size: 2rem;
+            }
+            
+            .world-subtitle {
+                font-size: 1rem;
+            }
+            
+            .map-canvas-wrapper {
+                height: 500px;
+                border-width: 4px;
+                border-radius: 12px;
+            }
+            
+            #region-skills { top: 18% !important; left: 20% !important; }
+            #region-projects { top: 18% !important; left: 65% !important; }
+            #region-education { top: 42% !important; left: 20% !important; }
+            #region-experience { top: 42% !important; left: 65% !important; }
+            #region-certifications { top: 66% !important; left: 20% !important; }
+            #region-contact { top: 66% !important; left: 65% !important; }
+            
+            .building-svg {
+                width: 50px;
+                height: 60px;
+            }
+            
+            .region-nameplate {
+                min-width: 140px;
+                padding: 8px 14px;
+                top: 50px;
+                font-size: 0.9rem;
+            }
+            
+            .region-name {
+                font-size: 1rem;
+                margin-bottom: 3px;
+            }
+            
+            .region-hint {
+                font-size: 0.75rem;
+            }
+            
+            .compass-rose {
+                width: 70px;
+                height: 70px;
+                top: 15px;
+                right: 15px;
+                opacity: 0.5;
+            }
+            
+            .scale-legend {
+                bottom: 15px;
+                left: 15px;
+                padding: 10px 14px;
+                font-size: 0.75rem;
+            }
+            
+            .scale-line {
+                width: 100px;
+                height: 6px;
+            }
+            
+            .title-cartouche {
+                padding: 8px 20px;
+                top: 15px;
+            }
+            
+            .cartouche-title {
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+            
+            .terrain-feature.mountains:nth-child(n+3),
+            .terrain-feature.forest:nth-child(n+4) {
+                display: none;
+            }
+            
+            .terrain-landmark {
+                transform: scale(0.8);
+            }
+            
+            .landmark-icon {
+                font-size: 1.8rem;
+            }
+            
+            .landmark-label {
+                font-size: 0.65rem;
+                padding: 2px 5px;
+            }
+            
+            .quick-menu {
+                position: fixed;
+                bottom: 15px;
+                left: 50%;
+                transform: translateX(-50%);
+                right: auto;
+                flex-direction: row;
+                background: rgba(232, 213, 183, 0.95);
+                padding: 10px;
+                border-radius: 15px;
+                border: 3px solid #4a3f2f;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+                gap: 8px;
+            }
+            
+            .menu-btn {
+                padding: 10px 14px;
+                flex: 1;
+                min-width: auto;
+            }
+            
+            .btn-icon {
+                font-size: 1.4rem;
+            }
+            
+            .btn-label {
+                font-size: 0.7rem;
+            }
+            
+            .map-ornament {
+                font-size: 1.5rem;
+            }
+            
+            .lock-overlay {
+                width: 28px;
+                height: 28px;
+                font-size: 1rem;
+                top: -8px;
+                right: -8px;
+            }
+            
+            .topo-lines {
+                width: 140px !important;
+                height: 140px !important;
+                top: -40px !important;
+                left: -40px !important;
+            }
+            
+            .mission-banner {
+                max-width: 90%;
+                padding: 30px 25px;
+            }
+            
+            .banner-title {
+                font-size: 1.8rem;
+            }
+            
+            .banner-text {
+                font-size: 1rem;
+            }
+            
+            .banner-close {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+            }
+            
+            .footprint {
+                transform: scale(0.8);
+            }
+            
+            .path-marker {
+                font-size: 1rem;
+            }
+            
+            .mystery-marker {
+                font-size: 1.2rem;
+            }
+
+            body {
+                overflow-x: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .world-map-container {
+                overflow-x: hidden;
+            }
+            
+            .map-canvas-wrapper {
+                margin: 0 auto;
+                position: relative;
+                max-width: calc(100vw - 20px);
+            }
+        }
+
+        /* Small Mobile (320px - 480px) */
+        @media (max-width: 480px) {
+            .world-title {
+                font-size: 1.6rem;
+            }
+            
+            .world-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .map-canvas-wrapper {
+                height: 450px;
+            }
+            
+            #region-skills { top: 16% !important; left: 18% !important; }
+            #region-projects { top: 16% !important; left: 70% !important; }
+            #region-education { top: 40% !important; left: 18% !important; }
+            #region-experience { top: 40% !important; left: 70% !important; }
+            #region-certifications { top: 64% !important; left: 18% !important; }
+            #region-contact { top: 64% !important; left: 70% !important; }
+            
+            .building-svg {
+                width: 45px;
+                height: 54px;
+            }
+            
+            .region-nameplate {
+                min-width: 120px;
+                padding: 6px 10px;
+                top: 45px;
+            }
+            
+            .region-name {
+                font-size: 0.9rem;
+            }
+            
+            .region-hint {
+                font-size: 0.7rem;
+            }
+            
+            .compass-rose {
+                width: 60px;
+                height: 60px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .scale-legend {
+                display: none;
+            }
+            
+            .title-cartouche {
+                padding: 6px 15px;
+                top: 10px;
+            }
+            
+            .cartouche-title {
+                font-size: 0.95rem;
+            }
+            
+            .terrain-landmark {
+                display: none;
+            }
+            
+            .quick-menu {
+                bottom: 10px;
+                padding: 8px;
+                gap: 6px;
+            }
+            
+            .menu-btn {
+                padding: 8px 10px;
+            }
+            
+            .btn-icon {
+                font-size: 1.2rem;
+            }
+            
+            .btn-label {
+                font-size: 0.65rem;
+            }
+            
+            .map-ornament {
+                display: none;
+            }
+            
+            .topo-lines {
+                display: none;
+            }
+            
+            .mission-banner {
+                padding: 20px 15px;
+            }
+            
+            .banner-title {
+                font-size: 1.5rem;
+            }
+            
+            .banner-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .map-region {
+                padding: 10px;
+            }
+            
+            .region-nameplate {
+                opacity: 1;
+                transform: translateX(-50%) translateY(5px);
+            }
+            
+            .map-canvas-wrapper {
+                touch-action: manipulation;
+            }
+            
+            .menu-btn {
+                min-height: 44px;
+            }
+            
+            .map-region:hover .region-structure {
+                transform: none;
+            }
+            
+            .building-shadow {
+                opacity: 1;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .map-canvas-wrapper {
+                height: 380px;
+            }
+            
+            .world-title {
+                font-size: 1.8rem;
+            }
+            
+            .world-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .quick-menu {
+                flex-direction: row;
+                bottom: 10px;
+            }
+            
+            .title-cartouche {
+                top: 8px;
+            }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .path-traveler {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+
+    <div class="world-map-container">
+        <!-- Header -->
+        <header class="map-header">
+            <h1 class="world-title">The Realms of <span class="name-highlight">Yatin Anchan</span></h1>
+            <p class="world-subtitle">Choose your destination, Traveler</p>
+        </header>
+
+        <!-- Map Canvas -->
+        <div class="map-canvas-wrapper">
+            <!-- Title Cartouche -->
+            <div class="title-cartouche">
+                <div class="cartouche-title">MAP OF KNOWLEDGE</div>
+            </div>
+
+            <!-- Compass Rose -->
+            <svg class="compass-rose" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#4a3f2f" stroke-width="2"/>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="#4a3f2f" stroke-width="1"/>
+                <polygon points="50,10 55,45 50,40 45,45" fill="#8b4513"/>
+                <polygon points="50,90 55,55 50,60 45,55" fill="#6b5744"/>
+                <polygon points="10,50 45,55 40,50 45,45" fill="#6b5744"/>
+                <polygon points="90,50 55,55 60,50 55,45" fill="#6b5744"/>
+                <text x="50" y="8" text-anchor="middle" fill="#4a3f2f" font-size="8" font-family="Cinzel">N</text>
+                <text x="50" y="97" text-anchor="middle" fill="#4a3f2f" font-size="8" font-family="Cinzel">S</text>
+                <text x="8" y="53" text-anchor="middle" fill="#4a3f2f" font-size="8" font-family="Cinzel">W</text>
+                <text x="92" y="53" text-anchor="middle" fill="#4a3f2f" font-size="8" font-family="Cinzel">E</text>
+            </svg>
+
+            <!-- Scale Legend -->
+            <div class="scale-legend">
+                <div style="font-size: 0.9rem; font-weight: 600;">Scale</div>
+                <div class="scale-line"></div>
+                <div style="font-size: 0.75rem; margin-top: 4px;">100 Skills</div>
+            </div>
+
+            <!-- SVG for paths, terrain, and footprints -->
+            <svg class="map-svg" xmlns="http://www.w3.org/2000/svg">
+                <!-- Terrain features (decorative) -->
+                <path class="terrain-path" d="M 100 150 Q 150 120 200 150 T 300 150" stroke-dasharray="3,2"/>
+                <path class="terrain-path" d="M 600 200 Q 700 180 800 200" stroke-dasharray="3,2"/>
+                
+                <!-- Connecting paths between regions -->
+                <path id="path-skills-projects" class="map-path" d="M 280 200 Q 400 250 700 200"/>
+                <path id="path-projects-certifications" class="map-path" d="M 700 200 Q 850 280 1050 344"/>
+                <path id="path-skills-education" class="map-path" d="M 280 200 Q 200 350 280 496"/>
+                <path id="path-projects-experience" class="map-path" d="M 700 200 Q 700 350 700 496"/>
+                <path id="path-certifications-contact" class="map-path" d="M 1050 344 Q 950 480 840 600"/>
+                <path id="path-education-experience" class="map-path" d="M 280 496 Q 490 520 700 496"/>
+                <path id="path-experience-contact" class="map-path" d="M 700 496 Q 770 548 840 600"/>
+                
+                <!-- Footprint trail group (will be populated dynamically) -->
+                <g id="footprint-trails"></g>
+                
+                <!-- Animated traveler (golden particle) -->
+                <circle class="path-traveler" r="5" fill="#FFD700">
+                    <animateMotion dur="8s" repeatCount="indefinite">
+                        <mpath href="#travel-path"/>
+                    </animateMotion>
+                </circle>
+                <path id="travel-path" d="M 280 200 Q 400 250 700 200 Q 850 280 1050 344 Q 950 480 840 600 Q 770 548 700 496 Q 490 520 280 496 Q 200 350 280 200" fill="none"/>
+                
+                <!-- Hill contour lines -->
+                <ellipse cx="35%" cy="25%" rx="60" ry="40" fill="none" stroke="#6b5744" stroke-width="1.5" opacity="0.15"/>
+                <ellipse cx="35%" cy="25%" rx="50" ry="32" fill="none" stroke="#6b5744" stroke-width="1.5" opacity="0.15"/>
+                <ellipse cx="35%" cy="25%" rx="40" ry="25" fill="none" stroke="#6b5744" stroke-width="1.5" opacity="0.15"/>
+                
+                <ellipse cx="65%" cy="30%" rx="70" ry="45" fill="none" stroke="#6b5744" stroke-width="1.5" opacity="0.15"/>
+                <ellipse cx="65%" cy="30%" rx="55" ry="35" fill="none" stroke="#6b5744" stroke-width="1.5" opacity="0.15"/>
+                
+                <ellipse cx="25%" cy="55%" rx="50" ry="35" fill="none" stroke="#4a6741" stroke-width="1.5" opacity="0.15"/>
+                <ellipse cx="25%" cy="55%" rx="40" ry="28" fill="none" stroke="#4a6741" stroke-width="1.5" opacity="0.15"/>
+                
+                <ellipse cx="70%" cy="60%" rx="55" ry="38" fill="none" stroke="#4a6741" stroke-width="1.5" opacity="0.15"/>
+                <ellipse cx="70%" cy="60%" rx="45" ry="30" fill="none" stroke="#4a6741" stroke-width="1.5" opacity="0.15"/>
+            </svg>
+
+            <!-- Enhanced Terrain decorations and landmarks -->
+            
+            <!-- Mountains and Hills -->
+            <div class="terrain-feature mountains" style="top: 25%; left: 35%;">⛰️</div>
+            <div class="terrain-feature mountains" style="top: 30%; left: 65%;">⛰️</div>
+            <div class="terrain-feature mountains" style="top: 18%; left: 42%;">🗻</div>
+            
+            <!-- Forests -->
+            <div class="terrain-feature forest" style="top: 55%; left: 25%;">🌲</div>
+            <div class="terrain-feature forest" style="top: 60%; left: 70%;">🌲</div>
+            <div class="terrain-feature forest" style="top: 52%; left: 28%;">🌲</div>
+            <div class="terrain-feature forest" style="top: 58%; left: 72%;">🌳</div>
+            <div class="terrain-feature forest" style="top: 64%; left: 68%;">🌲</div>
+            
+            <!-- Castles and Structures -->
+            <div class="terrain-landmark castle" style="top: 20%; left: 31%;" data-tooltip="Code Citadel">
+                <div class="landmark-icon">🏰</div>
+                <div class="landmark-label">Code Citadel</div>
+            </div>
+            
+            <div class="terrain-landmark tower" style="top: 25%; left: 60%;" data-tooltip="Builder's Tower">
+                <div class="landmark-icon">🗼</div>
+                <div class="landmark-label">Builder's Tower</div>
+            </div>
+            
+            <div class="terrain-landmark ruins" style="top: 68%; left: 23%;" data-tooltip="Ancient Archives">
+                <div class="landmark-icon">🏛️</div>
+                <div class="landmark-label">Ancient Archives</div>
+            </div>
+            
+            <!-- Camps and Settlements -->
+            <div class="terrain-landmark camp" style="top: 54%; left: 66%;" data-tooltip="Warrior's Camp">
+                <div class="landmark-icon">⛺</div>
+                <div class="landmark-label">Warrior's Camp</div>
+            </div>
+            
+            <div class="terrain-landmark village" style="top: 48%; left: 82%;" data-tooltip="Knowledge Haven">
+                <div class="landmark-icon">🏘️</div>
+                <div class="landmark-label">Knowledge Haven</div>
+            </div>
+            
+            <!-- Special Locations -->
+            <div class="terrain-landmark shrine" style="top: 75%; left: 70%;" data-tooltip="Aether Shrine">
+                <div class="landmark-icon">⛩️</div>
+                <div class="landmark-label">Aether Shrine</div>
+            </div>
+            
+            <!-- Clouds and Sky Elements -->
+            <div class="terrain-feature" style="top: 12%; left: 80%; font-size: 2rem; opacity: 0.2;">☁️</div>
+            <div class="terrain-feature" style="top: 8%; left: 15%; font-size: 2.5rem; opacity: 0.15;">☁️</div>
+            <div class="terrain-feature" style="top: 45%; left: 5%; font-size: 1.8rem; opacity: 0.2;">☁️</div>
+            
+            <!-- Rivers/Water -->
+            <div class="terrain-feature water" style="top: 40%; left: 38%;">💧</div>
+            <div class="terrain-feature water" style="top: 42%; left: 40%;">💧</div>
+            <div class="terrain-feature water" style="top: 44%; left: 42%;">💧</div>
+            
+            <!-- Decorative borders and ornaments -->
+            <div class="map-ornament corner-tl" style="position: absolute; top: 10px; left: 10px; font-size: 2rem; opacity: 0.4; z-index: 6;">✦</div>
+            <div class="map-ornament corner-tr" style="position: absolute; top: 10px; right: 10px; font-size: 2rem; opacity: 0.4; z-index: 6;">✦</div>
+            <div class="map-ornament corner-bl" style="position: absolute; bottom: 10px; left: 10px; font-size: 2rem; opacity: 0.4; z-index: 6;">✦</div>
+            <div class="map-ornament corner-br" style="position: absolute; bottom: 10px; right: 10px; font-size: 2rem; opacity: 0.4; z-index: 6;">✦</div>
+            
+            <!-- Path markers (milestones) -->
+            <div class="path-marker" style="position: absolute; top: 24%; left: 35%; z-index: 4;">
+                <div style="font-size: 1.2rem; opacity: 0.5;">📍</div>
+            </div>
+            <div class="path-marker" style="position: absolute; top: 30%; left: 62%; z-index: 4;">
+                <div style="font-size: 1.2rem; opacity: 0.5;">📍</div>
+            </div>
+            <div class="path-marker" style="position: absolute; top: 56%; left: 35%; z-index: 4;">
+                <div style="font-size: 1.2rem; opacity: 0.5;">📍</div>
+            </div>
+            
+            <!-- Treasure/Mystery markers -->
+            <div class="mystery-marker" style="position: absolute; top: 38%; left: 45%; z-index: 4; opacity: 0.3; font-size: 1.5rem;">✨</div>
+            <div class="mystery-marker" style="position: absolute; top: 72%; left: 45%; z-index: 4; opacity: 0.3; font-size: 1.5rem;">💎</div>
+
+            <!-- Region 1: Skills - The Code Castle -->
+            <div class="map-region" id="region-skills" data-region="skills" style="top: 25%; left: 20%;">
+                <div class="region-structure castle-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Castle towers -->
+                        <rect x="5" y="40" width="25" height="60" fill="#7a6b5d" stroke="#4a3f2f" stroke-width="2"/>
+                        <rect x="70" y="40" width="25" height="60" fill="#7a6b5d" stroke="#4a3f2f" stroke-width="2"/>
+                        <rect x="30" y="30" width="40" height="70" fill="#8b7a6b" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Battlements -->
+                        <rect x="5" y="35" width="5" height="10" fill="#6b5744"/>
+                        <rect x="15" y="35" width="5" height="10" fill="#6b5744"/>
+                        <rect x="25" y="35" width="5" height="10" fill="#6b5744"/>
+                        <rect x="70" y="35" width="5" height="10" fill="#6b5744"/>
+                        <rect x="80" y="35" width="5" height="10" fill="#6b5744"/>
+                        <rect x="90" y="35" width="5" height="10" fill="#6b5744"/>
+                        
+                        <!-- Castle roof -->
+                        <polygon points="17.5,25 5,40 30,40" fill="#A855F7" stroke="#4a3f2f" stroke-width="2"/>
+                        <polygon points="82.5,25 70,40 95,40" fill="#A855F7" stroke="#4a3f2f" stroke-width="2"/>
+                        <polygon points="50,15 30,30 70,30" fill="#9333ea" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Windows -->
+                        <rect x="40" y="50" width="8" height="12" fill="#FFD700" opacity="0.8"/>
+                        <rect x="52" y="50" width="8" height="12" fill="#FFD700" opacity="0.8"/>
+                        <rect x="40" y="70" width="8" height="12" fill="#FFD700" opacity="0.8"/>
+                        <rect x="52" y="70" width="8" height="12" fill="#FFD700" opacity="0.8"/>
+                        
+                        <!-- Door -->
+                        <rect x="42" y="85" width="16" height="15" fill="#4a3f2f" stroke="#2a1f1f" stroke-width="1"/>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="20" text-anchor="middle" font-size="16" fill="#FFD700">⚡</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">The Code Domain</h3>
+                    <p class="region-hint">Master the arts</p>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="80" ry="60" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="65" ry="48" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="50" ry="36" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+
+            <!-- Region 2: Projects - The Forge Building -->
+            <div class="map-region" id="region-projects" data-region="projects" style="top: 25%; left: 50%;">
+                <div class="region-structure forge-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Main building -->
+                        <rect x="15" y="50" width="70" height="50" fill="#8b5a3c" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Chimney -->
+                        <rect x="35" y="20" width="15" height="35" fill="#6b4423" stroke="#4a3f2f" stroke-width="2"/>
+                        <rect x="32" y="15" width="21" height="8" fill="#4a3f2f"/>
+                        
+                        <!-- Smoke -->
+                        <circle cx="42" cy="8" r="4" fill="#888" opacity="0.6"/>
+                        <circle cx="46" cy="5" r="5" fill="#999" opacity="0.5"/>
+                        <circle cx="40" cy="3" r="4" fill="#aaa" opacity="0.4"/>
+                        
+                        <!-- Roof -->
+                        <polygon points="10,50 50,30 90,50" fill="#EF7A35" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Anvil window -->
+                        <circle cx="50" cy="70" r="12" fill="#ff6b35" opacity="0.9"/>
+                        
+                        <!-- Door -->
+                        <rect x="60" y="75" width="18" height="25" fill="#4a3f2f" stroke="#2a1f1f" stroke-width="1"/>
+                        
+                        <!-- Windows -->
+                        <rect x="25" y="65" width="10" height="15" fill="#FFD700" opacity="0.7"/>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="28" text-anchor="middle" font-size="16" fill="#FFD700">🔥</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">The Forge</h3>
+                    <p class="region-hint">Creations forged</p>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="75" ry="65" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="60" ry="50" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="45" ry="35" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+
+            <!-- Region 3: Education - The Library -->
+            <div class="map-region" id="region-education" data-region="education" style="top: 62%; left: 20%;">
+                <div class="region-structure library-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Building base -->
+                        <rect x="10" y="45" width="80" height="55" fill="#b5a084" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Columns -->
+                        <rect x="15" y="50" width="8" height="45" fill="#d4c5a9" stroke="#4a3f2f" stroke-width="1"/>
+                        <rect x="35" y="50" width="8" height="45" fill="#d4c5a9" stroke="#4a3f2f" stroke-width="1"/>
+                        <rect x="55" y="50" width="8" height="45" fill="#d4c5a9" stroke="#4a3f2f" stroke-width="1"/>
+                        <rect x="75" y="50" width="8" height="45" fill="#d4c5a9" stroke="#4a3f2f" stroke-width="1"/>
+                        
+                        <!-- Pediment (triangular top) -->
+                        <polygon points="5,45 50,25 95,45" fill="#A0D7E4" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Entrance -->
+                        <rect x="40" y="80" width="20" height="20" fill="#4a3f2f"/>
+                        
+                        <!-- Book windows -->
+                        <rect x="20" y="60" width="12" height="10" fill="#6b9ac4" opacity="0.8"/>
+                        <rect x="45" y="60" width="12" height="10" fill="#6b9ac4" opacity="0.8"/>
+                        <rect x="68" y="60" width="12" height="10" fill="#6b9ac4" opacity="0.8"/>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="38" text-anchor="middle" font-size="16" fill="#4a3f2f">📚</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">Scholar's Library</h3>
+                    <p class="region-hint">Halls of wisdom</p>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="70" ry="55" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="55" ry="42" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+
+            <!-- Region 4: Experience - Military Barracks -->
+            <div class="map-region" id="region-experience" data-region="experience" style="top: 62%; left: 50%;">
+                <div class="region-structure barracks-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Fortified walls -->
+                        <rect x="10" y="50" width="80" height="50" fill="#8b7355" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Battlement walls -->
+                        <rect x="10" y="45" width="10" height="10" fill="#6b5744"/>
+                        <rect x="25" y="45" width="10" height="10" fill="#6b5744"/>
+                        <rect x="40" y="45" width="10" height="10" fill="#6b5744"/>
+                        <rect x="55" y="45" width="10" height="10" fill="#6b5744"/>
+                        <rect x="70" y="45" width="10" height="10" fill="#6b5744"/>
+                        
+                        <!-- Watchtower -->
+                        <rect x="70" y="25" width="20" height="30" fill="#9b8365" stroke="#4a3f2f" stroke-width="2"/>
+                        <polygon points="80,15 70,25 90,25" fill="#F59E0B" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Flag -->
+                        <line x1="80" y1="15" x2="80" y2="5" stroke="#4a3f2f" stroke-width="2"/>
+                        <polygon points="80,5 95,8 80,11" fill="#dc2626"/>
+                        
+                        <!-- Gate -->
+                        <rect x="35" y="75" width="25" height="25" fill="#4a3f2f"/>
+                        <circle cx="47.5" cy="90" r="3" fill="#8b7355"/>
+                        
+                        <!-- Windows -->
+                        <rect x="20" y="65" width="8" height="10" fill="#FFD700" opacity="0.6"/>
+                        <rect x="65" y="65" width="8" height="10" fill="#FFD700" opacity="0.6"/>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="42" text-anchor="middle" font-size="16" fill="#FFD700">🛡️</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">Path of Experience</h3>
+                    <p class="region-hint">Leadership forged</p>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="72" ry="58" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="58" ry="45" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+
+            <!-- Region 5: Certifications - Temple/Monument -->
+            <div class="map-region" id="region-certifications" data-region="certifications" style="top: 43%; left: 75%;">
+                <div class="region-structure temple-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Temple base -->
+                        <rect x="15" y="75" width="70" height="25" fill="#a0b5a0" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Temple body -->
+                        <rect x="20" y="50" width="60" height="25" fill="#b5c9b5" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Pillars -->
+                        <rect x="25" y="55" width="6" height="20" fill="#d4e5d4"/>
+                        <rect x="44" y="55" width="6" height="20" fill="#d4e5d4"/>
+                        <rect x="63" y="55" width="6" height="20" fill="#d4e5d4"/>
+                        
+                        <!-- Roof tiers -->
+                        <polygon points="12,50 50,35 88,50" fill="#75C2AA" stroke="#4a3f2f" stroke-width="2"/>
+                        <polygon points="18,35 50,22 82,35" fill="#85d2ba" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Spire -->
+                        <polygon points="50,10 45,22 55,22" fill="#FFD700" stroke="#4a3f2f" stroke-width="1"/>
+                        <circle cx="50" cy="8" r="4" fill="#FFD700" stroke="#4a3f2f" stroke-width="1"/>
+                        
+                        <!-- Entrance -->
+                        <rect x="43" y="82" width="14" height="18" fill="#4a3f2f"/>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="47" text-anchor="middle" font-size="16" fill="#FFD700">🏆</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">Isles of Knowledge</h3>
+                    <p class="region-hint">Badges earned</p>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="68" ry="52" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                    <ellipse cx="100" cy="100" rx="53" ry="40" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.3"/>
+                </svg>
+            </div>
+
+            <!-- Region 6: Contact - Portal/Gate Structure (Locked) -->
+            <div class="map-region locked" id="region-contact" data-region="contact" style="top: 75%; left: 60%;">
+                <div class="region-structure portal-structure">
+                    <svg class="building-svg" viewBox="0 0 100 120" width="80" height="96">
+                        <!-- Gate pillars -->
+                        <rect x="15" y="40" width="15" height="60" fill="#5a7a9a" stroke="#4a3f2f" stroke-width="2"/>
+                        <rect x="70" y="40" width="15" height="60" fill="#5a7a9a" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Pillar tops -->
+                        <circle cx="22.5" cy="35" r="8" fill="#6a8aaa" stroke="#4a3f2f" stroke-width="2"/>
+                        <circle cx="77.5" cy="35" r="8" fill="#6a8aaa" stroke="#4a3f2f" stroke-width="2"/>
+                        
+                        <!-- Arch -->
+                        <path d="M 30 45 Q 50 25 70 45" fill="none" stroke="#4a3f2f" stroke-width="3"/>
+                        <path d="M 32 48 Q 50 30 68 48" fill="none" stroke="#7a9aba" stroke-width="2"/>
+                        
+                        <!-- Portal energy (swirling) -->
+                        <ellipse cx="50" cy="70" rx="18" ry="25" fill="#3B82F6" opacity="0.3"/>
+                        <ellipse cx="50" cy="70" rx="14" ry="20" fill="#60a5fa" opacity="0.4"/>
+                        <ellipse cx="50" cy="70" rx="10" ry="15" fill="#93c5fd" opacity="0.5"/>
+                        
+                        <!-- Runes on pillars -->
+                        <text x="22" y="60" text-anchor="middle" font-size="8" fill="#FFD700">◈</text>
+                        <text x="22" y="75" text-anchor="middle" font-size="8" fill="#FFD700">◆</text>
+                        <text x="77" y="60" text-anchor="middle" font-size="8" fill="#FFD700">◈</text>
+                        <text x="77" y="75" text-anchor="middle" font-size="8" fill="#FFD700">◆</text>
+                        
+                        <!-- Icon -->
+                        <text x="50" y="75" text-anchor="middle" font-size="20" fill="#fff">🌀</text>
+                    </svg>
+                    <div class="building-shadow"></div>
+                </div>
+                <div class="region-nameplate">
+                    <h3 class="region-name">The Aether Gate</h3>
+                    <p class="region-hint">Final destination</p>
+                </div>
+                <div class="lock-overlay">
+                    <span>🔒</span>
+                </div>
+                <svg class="topo-lines" style="position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; pointer-events: none;">
+                    <ellipse cx="100" cy="100" rx="65" ry="50" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.2"/>
+                    <ellipse cx="100" cy="100" rx="50" ry="38" fill="none" stroke="#8b7355" stroke-width="1" opacity="0.2"/>
+                </svg>
+            </div>
+
+        </div>
+
+        <!-- Quick Menu -->
+        <nav class="quick-menu">
+            <button class="menu-btn" id="codex-btn">
+                <span class="btn-icon">📖</span>
+                <span class="btn-label">Codex</span>
+            </button>
+            <button class="menu-btn" id="achievements-btn">
+                <span class="btn-icon">🏅</span>
+                <span class="btn-label">Achievements</span>
+            </button>
+            <button class="menu-btn" id="profile-btn">
+                <span class="btn-icon">👤</span>
+                <span class="btn-label">Profile</span>
+            </button>
+            <button class="menu-btn" id="clear-journey-btn" title="Reset Journey">
+                <span class="btn-icon">🗺️</span>
+                <span class="btn-label">Reset Trail</span>
+            </button>
+        </nav>
+
+        <!-- Final Mission Banner -->
+        <div class="mission-banner hidden" id="final-mission-banner">
+            <h2 class="banner-title">⚡ Final Mission Unlocked ⚡</h2>
+            <p class="banner-text">The Aether Gate awaits. Your journey nears completion.</p>
+            <button class="banner-close" id="close-banner">Continue</button>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="map-bgm" src="assets/sounds/map-bgm.mp3" loop></audio>
+
+    <!-- JavaScript Files -->
+    <script src="js/storage.js"></script>
+    <script src="js/achievement-system.js"></script>
+    <script src="js/lore-system.js"></script>
+    <script src="js/xp-system.js"></script>
+    <script src="js/quest-system.js"></script>
+    <script src="js/game-engine.js"></script>
+    <script src="js/footprint-trail.js"></script>
+    <script src="js/worldmap-connected.js"></script>
+</body>
+</html>

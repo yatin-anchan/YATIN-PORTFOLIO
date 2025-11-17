@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Journey of the Developer</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading Journey...</p>
+    </div>
+
+    <script>
+        // Check if cutscene has been played
+        window.addEventListener('DOMContentLoaded', () => {
+            const cutscenePlayed = localStorage.getItem('cutscenePlayed');
+            
+            setTimeout(() => {
+                if (!cutscenePlayed) {
+                    window.location.href = 'cutscene.html';
+                } else {
+                    window.location.href = 'homepage.html';
+                }
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - The Forge</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/achievements.css">
+    <link rel="stylesheet" href="css/forge.css">
+</head>
+<body>
+    <!-- Loading Screen - Furnace Igniting -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="furnace-container">
+            <div class="furnace-flame">
+                <div class="flame flame-1">🔥</div>
+                <div class="flame flame-2">🔥</div>
+                <div class="flame flame-3">🔥</div>
+            </div>
+            <div class="anvil">⚒️</div>
+        </div>
+        <h2 class="loading-title">Entering The Forge...</h2>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loading-progress"></div>
+        </div>
+        <p class="loading-text">Stoking the flames...</p>
+    </div>
+
+    <!-- Hephaestus Dialogue Box (First Visit) -->
+    <div class="dialogue-overlay" id="dialogue-overlay">
+        <div class="dialogue-box">
+            <div class="blacksmith-portrait">
+                <div class="smith-avatar">⚒️</div>
+                <div class="smith-glow"></div>
+            </div>
+            <div class="dialogue-content">
+                <h3 class="speaker-name">Hephaestus, Master of the Forge</h3>
+                <p class="dialogue-text" id="dialogue-text"></p>
+                <button class="dialogue-btn" id="dialogue-next">Continue ➜</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forge Flames Background -->
+    <div class="forge-flames" id="forge-flames"></div>
+    
+    <!-- Ember Particles -->
+    <div class="ember-particles" id="ember-particles"></div>
+
+    <!-- Starfield -->
+    <div class="starfield" id="starfield"></div>
+
+    <a href="homepage.html" class="back-btn">← Back to Map</a>
+
+    <div class="projects-container">
+        <!-- Forge Background Elements -->
+        <div class="forge-bg">
+            <div class="furnace-glow"></div>
+        </div>
+
+        <div class="realm-header">
+            <div class="forge-title-container">
+                <div class="anvil-icon">⚒️</div>
+                <div class="flame-icon-left">🔥</div>
+                <h1 class="realm-title glow">The Forge</h1>
+                <div class="flame-icon-right">🔥</div>
+            </div>
+            <p class="realm-subtitle">Where Ideas are Forged into Reality</p>
+            <div class="forge-stats">
+                <span class="forge-stat">🔥 <strong id="weapons-forged">0</strong> Weapons Forged</span>
+                <span class="forge-stat">⚡ <strong id="total-power">0</strong> Total Power</span>
+            </div>
+        </div>
+
+        <!-- Weapon Racks Section -->
+        <div class="weapon-racks">
+            
+            <!-- Legendary Weapons -->
+            <div class="weapon-rack legendary-rack">
+                <h2 class="rack-title">⭐ Legendary Arsenal ⭐</h2>
+                
+                <!-- Py_OS - The OS Blade -->
+                <div class="weapon-card legendary" data-quest="pyos_quest">
+                    <div class="weapon-icon-display">⚔️</div>
+                    <div class="weapon-glow legendary-glow"></div>
+                    <div class="weapon-header">
+                        <h3 class="weapon-name">The OS Blade</h3>
+                        <span class="quest-badge" id="badge-pyos">⚔️ Ready to Forge</span>
+                    </div>
+                    <p class="weapon-subtitle">Py_OS -  Python Operating System</p>
+                    <p class="weapon-lore">
+                        "Forged from the essence of Python, this blade cuts through complexity with elegant precision. A simulator that teaches the fundamentals of operating systems through interactive exploration."
+                    </p>
+                    <div class="weapon-stats">
+                        <div class="stat-bar">
+                            <span class="stat-label">⚡ Power</span>
+                            <div class="stat-fill" style="width: 95%"></div>
+                        </div>
+                        <div class="stat-bar">
+                            <span class="stat-label">🎯 Impact</span>
+                            <div class="stat-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="weapon-materials">
+                        <span class="material-tag">Python</span>
+                        <span class="material-tag">Tkinter</span>
+                        <span class="material-tag">GUI</span>
+                        <span class="material-tag">OS Concepts</span>
+                        <span class="material-tag">distutil</span>
+                    </div>
+                    <button class="forge-btn" onclick="completeQuest('pyos_quest', this)">
+                        <span class="btn-icon">⚒️</span>
+                        <span class="btn-text">Claim Weapon</span>
+                    </button>
+                </div>
+
+                <!-- Autonix - The Guardian Shield -->
+                <div class="weapon-card legendary" data-quest="autonix_quest">
+                    <div class="weapon-icon-display">🛡️</div>
+                    <div class="weapon-glow legendary-glow"></div>
+                    <div class="weapon-header">
+                        <h3 class="weapon-name">The Guardian Shield</h3>
+                        <span class="quest-badge" id="badge-autonix">🛡️ Ready to Forge</span>
+                    </div>
+                    <p class="weapon-subtitle">Autonix -  AI Safety System</p>
+                    <p class="weapon-lore">
+                        "A mystical shield imbued with the power of artificial intelligence. Protects travelers on their journeys by detecting danger before it strikes. Its wisdom has been inscribed in ancient scrolls (Published Research Paper)."
+                    </p>
+                    <div class="weapon-stats">
+                        <div class="stat-bar">
+                            <span class="stat-label">🛡️ Defense</span>
+                            <div class="stat-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="stat-bar">
+                            <span class="stat-label">🧠 Intelligence</span>
+                            <div class="stat-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    <div class="weapon-materials">
+                        <span class="material-tag">Android</span>
+                        <span class="material-tag">Kotlin</span>
+                        <span class="material-tag">AI/ML</span>
+                        <span class="material-tag">Computer Vision</span>
+                        <span class="material-tag">GPS</span>
+                        <span class="material-tag">Research</span>
+                    </div>
+                    <button class="forge-btn" onclick="completeQuest('autonix_quest', this)">
+                        <span class="btn-icon">⚒️</span>
+                        <span class="btn-text">Claim Weapon</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Epic Weapons -->
+            <div class="weapon-rack epic-rack">
+                <h2 class="rack-title">🌟 Epic Creations 🌟</h2>
+                
+                <!-- Web Technology - Web Weaver's Bow -->
+                <div class="weapon-card epic" data-quest="web_quest">
+                    <div class="weapon-icon-display">🏹</div>
+                    <div class="weapon-glow epic-glow"></div>
+                    <div class="weapon-header">
+                        <h3 class="weapon-name">Web Weaver's Bow</h3>
+                        <span class="quest-badge" id="badge-web">🏹 Ready to Forge</span>
+                    </div>
+                    <p class="weapon-subtitle">Web Technology -  Multi-Page Platform</p>
+                    <p class="weapon-lore">
+                        "This bow shoots arrows across vast digital distances, connecting users with knowledge. Each arrow carries information about the legendary Py_OS, striking true with responsive design."
+                    </p>
+                    <div class="weapon-stats">
+                        <div class="stat-bar">
+                            <span class="stat-label">🌐 Reach</span>
+                            <div class="stat-fill" style="width: 85%"></div>
+                        </div>
+                        <div class="stat-bar">
+                            <span class="stat-label">🎨 Design</span>
+                            <div class="stat-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="weapon-materials">
+                        <span class="material-tag">HTML</span>
+                        <span class="material-tag">CSS</span>
+                        <span class="material-tag">JavaScript</span>
+                        <span class="material-tag">Responsive</span>
+                        <span class="material-tag">Replit</span>
+                    </div>
+                    <button class="forge-btn" onclick="completeQuest('web_quest', this)">
+                        <span class="btn-icon">⚒️</span>
+                        <span class="btn-text">Claim Weapon</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Hephaestus' Wisdom Box -->
+        <div class="smith-wisdom" id="smith-wisdom">
+            <div class="wisdom-icon">⚒️</div>
+            <p class="wisdom-text">
+                "Each weapon tells a story of battles fought and obstacles overcome. Click to claim your masterpieces!"
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Hammer Strike Effect -->
+    <div class="hammer-strike" id="hammer-strike">
+        <div class="strike-impact">💥</div>
+        <div class="sparks-container"></div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/achievement-system.js"></script>
+    <script src="js/lore-system.js"></script>
+    <script src="js/xp-system.js"></script>
+    <script src="js/quest-system.js"></script>
+    <script src="js/game-engine.js"></script>
+    <script src="js/forge-system.js"></script>
+</body>
+</html>

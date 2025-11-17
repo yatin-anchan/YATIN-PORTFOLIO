@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Journey Begins...</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/cutscene.css">
+</head>
+<body>
+    <!-- Skip Button -->
+    <button id="skip-btn" class="skip-button">Skip Intro</button>
+
+    <!-- Cutscene Container -->
+    <div id="cutscene-container">
+        
+        <!-- Scene 1: Awakening -->
+        <div class="scene" id="scene-1">
+            <div class="background-particles"></div>
+            <div class="character-silhouette fade-in"></div>
+            <div class="dialogue-text">
+                <p class="dialogue-line">"In a world shaped by code and curiosity..."</p>
+            </div>
+        </div>
+
+        <!-- Scene 2: The Traveler -->
+        <div class="scene" id="scene-2">
+            <div class="wind-streaks"></div>
+            <div class="character-silhouette stance-idle"></div>
+            <div class="dialogue-text">
+                <p class="dialogue-line">"A young developer takes his first step."</p>
+            </div>
+        </div>
+
+        <!-- Scene 3: The Realms -->
+        <div class="scene" id="scene-3">
+            <div class="realm-outlines">
+                <div class="realm" data-element="pyro">Skills Realm</div>
+                <div class="realm" data-element="electro">Projects Realm</div>
+                <div class="realm" data-element="cryo">Achievements Realm</div>
+                <div class="realm" data-element="geo">Experience Desert</div>
+                <div class="realm" data-element="anemo">Certifications Isles</div>
+                <div class="realm" data-element="hydro">Contact Gate</div>
+            </div>
+            <div class="dialogue-text">
+                <p class="dialogue-line">"Across vast domains lie stories waiting to be discovered."</p>
+            </div>
+        </div>
+
+        <!-- Scene 4: The Mission -->
+        <div class="scene" id="scene-4">
+            <div class="character-silhouette turn-forward"></div>
+            <div class="dialogue-text">
+                <p class="dialogue-line">"Your mission is simple..."</p>
+                <p class="mission-text glow">"Reach the Developer."</p>
+            </div>
+            <div class="portal-effect"></div>
+        </div>
+
+    </div>
+
+    <!-- Audio -->
+    <audio id="cutscene-bgm" src="assets/sounds/cutscene-bgm.mp3" loop></audio>
+    <audio id="rumble-sound" src="assets/sounds/rumble.mp3"></audio>
+
+    <script src="js/cutscene-manager.js"></script>
+</body>
+</html>

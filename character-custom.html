@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Customization</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/character.css">
+    <link rel="stylesheet" href="css/vision.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <h2 class="loading-title">Entering Character Hall</h2>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+            <p class="loading-text">Preparing your journey...</p>
+        </div>
+    </div>
+
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+
+    <div class="customization-container">
+        
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="title glow">Choose Your Path</h1>
+            <p class="subtitle">Every traveler has their essence. What's yours?</p>
+        </div>
+
+        <!-- Character Preview with Sprite -->
+        <div class="character-preview">
+            <div class="character-model" id="character-model">
+                <!-- Vision Glow Background -->
+                <div class="vision-glow-bg" id="vision-glow"></div>
+                
+                <!-- Character Sprite -->
+
+                <!-- Body -->
+                    <div class="character-body">
+                        <div class="torso"></div>
+                        <div class="arm arm-left"></div>
+                        <div class="arm arm-right"></div>
+                        <div class="legs">
+                            <div class="leg leg-left"></div>
+                            <div class="leg leg-right"></div>
+                        </div>
+                    </div>
+                <div class="character-sprite" id="character-sprite">
+                    <!-- Head -->
+                    <div class="character-head">
+                        <div class="hair-top"></div>
+                        <div class="face">
+                            <div class="eye eye-left"></div>
+                            <div class="eye eye-right"></div>
+                            <div class="mouth"></div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <!-- Weapon Overlay -->
+                    <div class="weapon-display" id="weapon-display">
+                        <span class="weapon-icon" id="weapon-icon"></span>
+                    </div>
+                </div>
+                
+                <!-- Aura Particles -->
+                <div class="aura-particles" id="aura"></div>
+                
+                <!-- Vision Badge -->
+                <div class="vision-badge" id="vision-badge">
+                    <span class="vision-icon" id="vision-icon"></span>
+                </div>
+            </div>
+            
+            <!-- Character Info Display -->
+            <div class="character-info">
+                <h3>Traveler Profile</h3>
+                <p class="info-line"><span class="info-label">Vision:</span> <span id="selected-vision">Not Selected</span></p>
+                <p class="info-line"><span class="info-label">Weapon:</span> <span id="selected-weapon">Not Selected</span></p>
+                <p class="info-line"><span class="info-label">Stance:</span> <span id="selected-pose">Idle</span></p>
+            </div>
+        </div>
+
+        <!-- Vision Selection Grid -->
+        <div class="vision-section">
+            <h2 class="section-title">⚡ Select Your Vision ⚡</h2>
+            <p class="section-desc">Your vision determines your elemental affinity and power</p>
+            <div class="vision-grid">
+                
+                <div class="vision-orb" data-element="electro">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">⚡</div>
+                    <p class="vision-name">Electro</p>
+                    <p class="vision-desc">Code that sparks innovation</p>
+                </div>
+
+                <div class="vision-orb" data-element="pyro">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">🔥</div>
+                    <p class="vision-name">Pyro</p>
+                    <p class="vision-desc">Passionate development</p>
+                </div>
+
+                <div class="vision-orb" data-element="cryo">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">❄️</div>
+                    <p class="vision-name">Cryo</p>
+                    <p class="vision-desc">Precise and calculated</p>
+                </div>
+
+                <div class="vision-orb" data-element="anemo">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">🌪️</div>
+                    <p class="vision-name">Anemo</p>
+                    <p class="vision-desc">Free-flowing creativity</p>
+                </div>
+
+                <div class="vision-orb" data-element="geo">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">🪨</div>
+                    <p class="vision-name">Geo</p>
+                    <p class="vision-desc">Solid foundations</p>
+                </div>
+
+                <div class="vision-orb" data-element="hydro">
+                    <div class="orb-glow"></div>
+                    <div class="orb-icon">💧</div>
+                    <p class="vision-name">Hydro</p>
+                    <p class="vision-desc">Adaptive solutions</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Weapon Selection -->
+        <div class="weapon-section">
+            <h2 class="section-title">⚔️ Choose Your Weapon ⚔️</h2>
+            <p class="section-desc">Select your weapon of choice</p>
+            <div class="weapon-grid">
+                <div class="weapon-card" data-weapon="sword">
+                    <div class="weapon-icon">⚔️</div>
+                    <p class="weapon-name">Sword</p>
+                    <p class="weapon-type">Balanced</p>
+                </div>
+                <div class="weapon-card" data-weapon="axe">
+                    <div class="weapon-icon">🪓</div>
+                    <p class="weapon-name">Axe</p>
+                    <p class="weapon-type">Power</p>
+                </div>
+                <div class="weapon-card" data-weapon="staff">
+                    <div class="weapon-icon">🔱</div>
+                    <p class="weapon-name">Staff</p>
+                    <p class="weapon-type">Magic</p>
+                </div>
+                <div class="weapon-card" data-weapon="bow">
+                    <div class="weapon-icon">🏹</div>
+                    <p class="weapon-name">Bow</p>
+                    <p class="weapon-type">Ranged</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pose Selection -->
+        <div class="pose-section">
+            <h2 class="section-title">🎭 Select Your Stance 🎭</h2>
+            <div class="pose-grid">
+                <button class="pose-btn" data-pose="idle">
+                    <span class="pose-icon">🧍</span>
+                    <span>Idle</span>
+                </button>
+                <button class="pose-btn" data-pose="combat">
+                    <span class="pose-icon">⚔️</span>
+                    <span>Combat Ready</span>
+                </button>
+                <button class="pose-btn" data-pose="heroic">
+                    <span class="pose-icon">🦸</span>
+                    <span>Heroic</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Confirm Button -->
+        <button class="btn confirm-btn" id="confirm-btn" disabled>
+            <span class="btn-text">Confirm Selection</span>
+            <span class="btn-hint">(Select Vision & Weapon)</span>
+        </button>
+
+    </div>
+
+    <!-- Achievement Notification -->
+    <div class="achievement-popup" id="achievement-notification" style="display: none;">
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-content">
+            <h3 id="achievement-title">Achievement Unlocked!</h3>
+            <p id="achievement-text"></p>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/character-system.js"></script>
+    <script src="js/vision-attacks.js"></script>
+</body>
+</html>
